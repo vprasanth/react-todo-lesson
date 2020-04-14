@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
+import './Todo.css';
 
 function Todo() {
-  const [task, addTask] = useState('');
-  const [todos, addTodo] = useState([
+  const [task, setTask] = useState('');
+  const [todos, setTodos] = useState([
     {
       task: 'wash car',
       done: false,
@@ -20,7 +21,7 @@ function Todo() {
   function handleAddClick(ev) {
     ev.preventDefault();
     // add new task to todos array
-    addTodo([
+    setTodos([
       {
         task,
         done: false,
@@ -28,7 +29,19 @@ function Todo() {
       ...todos,
     ]);
     // clear input box
-    addTask('');
+    setTask('');
+  }
+
+  function markComplete(index) {
+    const newTodos = [...todos];
+    newTodos[index] = { ...newTodos[index], done: true };
+    setTodos(newTodos);
+  }
+
+  function deleteTask(index) {
+    const newTodos = [...todos];
+    newTodos.splice(index, 1);
+    setTodos(newTodos);
   }
 
   return (
@@ -37,19 +50,22 @@ function Todo() {
         <h1>Todo App</h1>
       </header>
       <div>
-        <ul>
-          {todos.map((todo, idx) => (
-            <li key={idx}>{todo.task}</li>
-          ))}
-        </ul>
-      </div>
-      <div>
         <input
           name="task"
           value={task}
-          onChange={(ev) => addTask(ev.target.value)}
+          onChange={(ev) => setTask(ev.target.value)}
         />
-        <button onClick={handleAddClick}>Add</button>
+        <button onClick={handleAddClick}>add</button>
+      </div>
+      <div>
+        <ul>
+          {todos.map((todo, idx) => (
+            <li className={`${todo.done ? 'done' : ''}`} key={idx}>
+              {todo.task} <button onClick={() => markComplete(idx)}>✔️</button>
+              <button onClick={() => deleteTask(idx)}>🗑️</button>
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );
